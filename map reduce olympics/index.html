@@ -71,4 +71,56 @@ console.log("Phelps has "
     + " silvers, and "
     + phelps_medals_olympics_es6.map(item => item.bronze).reduce((total, num) => total+num)
     + " bronzes.")
+
+var has_golds = olympics_data
+    .filter(function (item) { return item.gold > 0; })
+    .map(function (item) { return item.country; })
+var countries = olympics_data
+    .map(function (item) { return item.country; })
+var no_golds = countries
+    .filter(function(c) { return !has_golds
+        .some(function(ng){ return c == ng})
+})
+no_golds = new Set(no_golds)
+console.log('Countries with no golds are:', no_golds)
+
+
+var countries = olympics_data
+    .map(function (item) { return item.country; })
+countries = new Set(countries)
+var country_data = []
+countries.forEach(c => {
+    var current_country = olympics_data
+        .filter(function (item) { return item.country == c })
+    var gold = current_country.map(item => item.gold).reduce((total, num) => total+num);
+    var silver = current_country.map(item => item.silver).reduce((total, num) => total+num)
+    var bronze = current_country.map(item => item.bronze).reduce((total, num) => total+num)
+    total_medals = gold + silver + bronze
+    var temp = {name: c, medals: total_medals}
+    country_data.push(temp)
+});
+country_data.sort(function(a, b) {
+    return b.medals - a.medals
+})
+console.log('The top three coutries are:')
+console.log('Name: ' + country_data[0].name + ' | Total Medals: ' + country_data[0].medals)
+console.log('Name: ' + country_data[1].name + ' | Total Medals: ' + country_data[1].medals)
+console.log('Name: ' + country_data[2].name + ' | Total Medals: ' + country_data[2].medals)
+
+
+var countries = olympics_data
+    .map(function (item) { return item.country; })
+countries = new Set(countries)
+var most_sports = {name: '', total: 0}
+countries.forEach(c => {
+    var current_country = olympics_data
+        .filter(function (item) { return item.country == c })
+        .map(function (item) {return item.sport})
+    unique_sports = new Set(current_country)
+    if (unique_sports.size> most_sports.total) {
+        most_sports.name = c
+        most_sports.total = unique_sports.size
+    }
+});
+console.log('The country that competed in the most different types of events is ' + most_sports.name + ' with ' + most_sports.total + ' unique events.')
 </script>
