@@ -8,12 +8,14 @@
 <li> TODO What country competed in the most different types of events?
 
 <script>
+// how many elements of data in specfic years
 var data_from_2008 = olympics_data.filter(function (item) { return item.year == 2008; });
 console.log("How many elements of data from 2008: " + data_from_2008.length);
 
 var data_from_2009 = olympics_data.filter(function (item) { return item.year == 2009; });
 console.log("How many elements of data from 2009: " + data_from_2009.length);
 
+// how many us golds in 2008
 var us_golds_2008 = olympics_data
     .filter(function (item) { return item.year == 2008; })
     .filter(function (item) { return item.country == "United States"; })
@@ -28,6 +30,7 @@ var us_golds_2008_es6 = olympics_data
     .reduce((total, num) => total + num);
 console.log("US gold medals in 2008 using es6: " + us_golds_2008_es6);
 
+// how many us silver in 2008
 var us_silver_2008_es6 = olympics_data
     .filter(item => item.year == 2008)
     .filter(item => item.country == "United States")
@@ -35,6 +38,7 @@ var us_silver_2008_es6 = olympics_data
     .reduce((total, num) => total + num);
 console.log("US silver medals in 2008 using es6: " + us_silver_2008_es6);
 
+// how many us bronze in 2008
 var us_bronze_2008_es6 = olympics_data
     .filter(item => item.year == 2008)
     .filter(item => item.country == "United States")
@@ -42,6 +46,7 @@ var us_bronze_2008_es6 = olympics_data
     .reduce((total, num) => total + num);
 console.log("US bronze medals in 2008 using es6: " + us_bronze_2008_es6);
 
+// how many us medals total 2008
 var us_medals_2008_es6 = olympics_data
     .filter(item => item.year == 2008)
     .filter(item => item.country == "United States")
@@ -49,18 +54,21 @@ var us_medals_2008_es6 = olympics_data
     .reduce((total, num) => total + num);
 console.log("US medals in 2008 using es6: " + us_medals_2008_es6);
 
+// how many olympics was phelps in
 var phelps_olympics_es6 = olympics_data
     .filter(item => item.country == "United States")
     .filter(item => item.athlete == "Michael Phelps")
     .length;
 console.log("Number of olympics that US athlete Michael Phelps participated in (assuming there aren't two different people named Michael Phelps) using es6: " + phelps_olympics_es6);
 
+// which olympics was phelps in
 var which_phelps_olympics_es6 = olympics_data
     .filter(item => item.country == "United States")
     .filter(item => item.athlete == "Michael Phelps")
     .map(item => item.year);
 console.log("Which olympics Phelps participated in using es6: " + which_phelps_olympics_es6.sort().join(', '));
 
+// how many medals does phelps have
 var phelps_medals_olympics_es6 = olympics_data
     .filter(item => item.country == "United States")
     .filter(item => item.athlete == "Michael Phelps");
@@ -72,6 +80,7 @@ console.log("Phelps has "
     + phelps_medals_olympics_es6.map(item => item.bronze).reduce((total, num) => total+num)
     + " bronzes.")
 
+// which countries don't have any gold medals
 var has_golds = olympics_data
     .filter(function (item) { return item.gold > 0; })
     .map(function (item) { return item.country; })
@@ -84,18 +93,26 @@ var no_golds = countries
 no_golds = new Set(no_golds)
 console.log('Countries with no golds are:', no_golds)
 
+var has_golds_es6 = olympics_data
+    .filter(item => item.gold > 0)
+    .map(item => item.country)
+var countries_es6 = olympics_data
+    .map(item => item.country)
+var no_golds_es6 = countries
+    .filter(c => !has_golds.some(g => c === g))
+no_golds_es6 = new Set(no_golds_es6)
+console.log('(ES6) Countries with no golds are:', no_golds_es6)
 
+// what are the top three countries in terms of medals
 var countries = olympics_data
     .map(function (item) { return item.country; })
 countries = new Set(countries)
 var country_data = []
 countries.forEach(c => {
-    var current_country = olympics_data
+    var total_medals = olympics_data
         .filter(function (item) { return item.country == c })
-    var gold = current_country.map(item => item.gold).reduce((total, num) => total+num);
-    var silver = current_country.map(item => item.silver).reduce((total, num) => total+num)
-    var bronze = current_country.map(item => item.bronze).reduce((total, num) => total+num)
-    total_medals = gold + silver + bronze
+        .map(function(item) { return item.gold + item.silver + item.bronze })
+        .reduce(function (total, num) { return total + num; });
     var temp = {name: c, medals: total_medals}
     country_data.push(temp)
 });
@@ -107,7 +124,25 @@ console.log('Name: ' + country_data[0].name + ' | Total Medals: ' + country_data
 console.log('Name: ' + country_data[1].name + ' | Total Medals: ' + country_data[1].medals)
 console.log('Name: ' + country_data[2].name + ' | Total Medals: ' + country_data[2].medals)
 
+var countries_es6 = olympics_data
+    .map(item => item.country)
+countries_es6 = new Set(countries_es6)
+var country_data_es6 = []
+countries_es6.forEach(c => {
+    var total_medals = olympics_data
+        .filter(item => item.country == c )
+        .map(item => item.gold + item.silver + item.bronze)
+        .reduce((total, num) => total + num);
+    var temp = {name: c, medals: total_medals}
+    country_data_es6.push(temp)
+});
+country_data_es6.sort((a, b) => b.medals - a.medals)
+console.log('(ES6) The top three coutries are:')
+console.log('Name: ' + country_data_es6[0].name + ' | Total Medals: ' + country_data_es6[0].medals)
+console.log('Name: ' + country_data_es6[1].name + ' | Total Medals: ' + country_data_es6[1].medals)
+console.log('Name: ' + country_data_es6[2].name + ' | Total Medals: ' + country_data_es6[2].medals)
 
+// which country competed in the most different types of events
 var countries = olympics_data
     .map(function (item) { return item.country; })
 countries = new Set(countries)
@@ -123,4 +158,20 @@ countries.forEach(c => {
     }
 });
 console.log('The country that competed in the most different types of events is ' + most_sports.name + ' with ' + most_sports.total + ' unique events.')
+
+var countries_es6 = olympics_data
+    .map(item => item.country )
+countries_es6  = new Set(countries_es6)
+var most_sports_es6  = {name: '', total: 0}
+countries_es6 .forEach(c => {
+    var current_country = olympics_data
+        .filter(item =>  item.country == c )
+        .map(item => item.sport)
+    var unique_sports = new Set(current_country)
+    if (unique_sports.size > most_sports_es6.total) {
+        most_sports_es6.name = c
+        most_sports_es6.total = unique_sports.size
+    }
+});
+console.log('(ES6) The country that competed in the most different types of events is ' + most_sports_es6.name + ' with ' + most_sports_es6 .total + ' unique events.')
 </script>
